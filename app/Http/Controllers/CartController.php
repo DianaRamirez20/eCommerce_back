@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        return CartResource::collection(Cart::all());
     }
 
     /**
@@ -35,7 +36,8 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return (new CartResource(Cart::create($request->all())))->additional(["message"=>"Producto añadido al carrito con éxito."]);
+
     }
 
     /**
@@ -46,7 +48,7 @@ class CartController extends Controller
      */
     public function show(Cart $cart)
     {
-        //
+        return new CartResource($cart);
     }
 
     /**
@@ -69,7 +71,8 @@ class CartController extends Controller
      */
     public function update(Request $request, Cart $cart)
     {
-        //
+        $cart->update($request->all());
+        return (new CartResource($cart))->additional(["message"=>"Carrito actualizado con éxito."]);
     }
 
     /**
@@ -80,6 +83,8 @@ class CartController extends Controller
      */
     public function destroy(Cart $cart)
     {
-        //
+        $cart->delete();
+        return (new CartResource($cart))->additional(["message"=>"Producto eliminado del carrito con éxito."]);
+    
     }
 }
